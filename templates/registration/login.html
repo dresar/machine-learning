@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Masuk</title>
+  <!-- Bootstrap 5.3 & Icons (Cloudflare CDN - stable) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-grad-start:#111827; /* slate-900 */
+      --bg-grad-end:#1f2937;   /* slate-800 */
+      --card-bg:#ffffff;
+    }
+    body {
+      min-height:100vh;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(59,130,246,.15), transparent),
+                  radial-gradient(1000px 500px at 90% 20%, rgba(236,72,153,.12), transparent),
+                  linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-end));
+      color:#e5e7eb;
+    }
+    .brand {
+      display:flex; align-items:center; gap:.6rem; color:#e5e7eb; text-decoration:none;
+    }
+    .login-shell { min-height:100vh; display:flex; align-items:center; }
+    .card-login { border:none; border-radius:16px; overflow:hidden; }
+    .card-login .card-body { background:var(--card-bg); }
+    .input-group-text { background:#f1f5f9; }
+    .muted { color:#6b7280; }
+  </style>
+  {% load static %}
+  {% load i18n %}
+</head>
+<body>
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a class="brand" href="/">
+        <i class="bi bi-cpu"></i>
+        <span class="fw-semibold">ML Dashboard</span>
+      </a>
+      <a class="btn btn-outline-light btn-sm" href="/">Kembali</a>
+    </div>
+
+    <div class="login-shell">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+            <div class="card card-login shadow-lg">
+              <div class="card-body p-4">
+                <div class="text-center mb-3">
+                  <i class="bi bi-shield-lock" style="font-size:2rem; color:#0d6efd;"></i>
+                  <h1 class="h4 mt-2 mb-0">Masuk</h1>
+                  <p class="muted">Silakan autentikasi untuk mengakses dashboard.</p>
+                </div>
+
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                  {% csrf_token %}
+
+                  <div class="mb-3">
+                    <label for="id_username" class="form-label">Username</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-person"></i></span>
+                      <input id="id_username" name="username" type="text" value="{{ form.username.value|default:'' }}" class="form-control" autocomplete="username" required />
+                    </div>
+                    {% if form.username.errors %}
+                      <div class="text-danger small mt-1">{{ form.username.errors|join:', ' }}</div>
+                    {% endif %}
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="id_password" class="form-label">Password</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-key"></i></span>
+                      <input id="id_password" name="password" type="password" class="form-control" autocomplete="current-password" required />
+                      <button class="btn btn-outline-secondary" type="button" id="togglePw" aria-label="Tampilkan/sempunyikan password"><i class="bi bi-eye"></i></button>
+                    </div>
+                    {% if form.password.errors %}
+                      <div class="text-danger small mt-1">{{ form.password.errors|join:', ' }}</div>
+                    {% endif %}
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="1" id="rememberMe">
+                      <label class="form-check-label" for="rememberMe">Ingat saya</label>
+                    </div>
+                    <a href="#" class="text-decoration-none">Lupa password?</a>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+
+                <p class="mt-3 muted" style="font-size:.9rem;">Tidak punya akun? Buat superuser: <code>python manage.py createsuperuser</code></p>
+                <div class="d-flex gap-2 mt-2">
+                  <a class="btn btn-outline-primary w-50" href="/">Dashboard</a>
+                  <a class="btn btn-outline-secondary w-50" href="/dataset/">Dataset</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const toggleBtn = document.getElementById('togglePw');
+    const pw = document.getElementById('id_password');
+    if (toggleBtn && pw) {
+      toggleBtn.addEventListener('click', () => {
+        const on = pw.getAttribute('type') === 'password';
+        pw.setAttribute('type', on ? 'text' : 'password');
+        toggleBtn.innerHTML = on ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+      });
+    }
+  </script>
+</body>
+</html>
